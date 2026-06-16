@@ -2,10 +2,14 @@ const prompt = require("prompt-sync")();
 
 const RealmAPI = require("./src/classes/Realm");
 const createInstance = require("./src/client/Instance.js");
+const { createRelay } = require("./src/relay/relay.js");
 
 (async () => {
     let RAPI = new RealmAPI();
     await RAPI.init();
+
+    /* const R = await RAPI.joinRealm("5EfvHZ5MbozvA8M")
+    await RAPI.postStorySettings(R.id) */
 
     let realms = await RAPI.getRealms(RAPI.xuid);
     realms = realms.filter(realm => !realm.expired && realm.state !== "CLOSED").sort((a, b) => a.id - b.id);
@@ -38,5 +42,6 @@ const createInstance = require("./src/client/Instance.js");
 
     realm.transport = realmIP.networkProtocol;
 
+    // Change to createRelay if you want to use a relay, otherwise, keep createInstance
     createInstance(realm, RAPI);
 })();
