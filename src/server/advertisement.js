@@ -10,11 +10,11 @@ class NethernetServerAdvertisement {
   unknown1 = 4
   unknown2 = 8
 
-  constructor (obj) {
+  constructor(obj) {
     Object.assign(this, obj)
   }
 
-  static fromBuffer (buffer) {
+  static fromBuffer(buffer) {
     const advertisement = new NethernetServerAdvertisement()
     let offset = 0
 
@@ -64,7 +64,7 @@ class NethernetServerAdvertisement {
     return advertisement
   }
 
-  toBuffer () {
+  toBuffer() {
     const motdBuffer = Buffer.from(this.motd, 'utf8')
     const levelNameBuffer = Buffer.from(this.levelName, 'utf8')
 
@@ -119,16 +119,16 @@ class ServerAdvertisement {
   portV4 = undefined
   portV6 = undefined
 
-  constructor (obj, port, version = "1.26.20") {
+  constructor(obj, port, version = "1.26.20") {
     if (obj?.name) obj.motd = obj.name
-    this.protocol = 975
+    this.protocol = 1001
     this.version = version
     this.portV4 = port
     this.portV6 = port
     Object.assign(this, obj)
   }
 
-  fromString (str) {
+  fromString(str) {
     const [header, motd, protocol, version, playersOnline, playersMax, serverId, levelName, gamemode, gamemodeId, portV4, portV6] = str.split(';')
     Object.assign(this, { header, motd, protocol, version, playersOnline, playersMax, serverId, levelName, gamemode, gamemodeId, portV4, portV6 })
     for (const numeric of ['playersOnline', 'playersMax', 'gamemodeId', 'portV4', 'portV6']) {
@@ -139,7 +139,7 @@ class ServerAdvertisement {
     return this
   }
 
-  toString () {
+  toString() {
     return [
       'MCPE',
       this.motd,
@@ -157,7 +157,7 @@ class ServerAdvertisement {
     ].join(';') + ';'
   }
 
-  toBuffer (version) {
+  toBuffer(version) {
     const str = this.toString(version)
     const length = Buffer.byteLength(str)
     const buf = Buffer.alloc(2 + length)
@@ -170,10 +170,10 @@ class ServerAdvertisement {
 module.exports = {
   ServerAdvertisement,
   NethernetServerAdvertisement,
-  getServerName (client) {
+  getServerName(client) {
     return new ServerAdvertisement().toBuffer()
   },
-  fromServerName (string) {
+  fromServerName(string) {
     return new ServerAdvertisement().fromString(string)
   }
 }
