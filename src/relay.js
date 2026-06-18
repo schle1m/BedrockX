@@ -169,11 +169,13 @@ class Relay extends Server {
                 }
             },
             profilesFolder: this.options.profilesFolder,
-            autoInitPlayer: false
+            autoInitPlayer: false,
+            delayedInit: true
         }
 
         const client = new Client(options)
 
+        await client.init()
         client.connect()
 
         client.once('resource_packs_info', (params) => {
