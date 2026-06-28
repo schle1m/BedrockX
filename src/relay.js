@@ -67,10 +67,13 @@ class RelayPlayer extends Player {
                     this.player_unique_id = params.entity_id;
                     this.sentStartGame = true
                     this.flushChunks();
-                    break
+                    break;
                 case 'level_chunk':
-                    this.chunkSendCache.push(packet);
-                    return
+                    if (!this.sentStartGame) {
+                        this.chunkSendCache.push(packet);
+                        return;
+                    }
+                    break;
                 case 'item_registry':
                     const states = params.itemstates;
                     if (states) {
@@ -91,10 +94,10 @@ class RelayPlayer extends Player {
                     break
             }
 
-            des.modified ? this.write(name, params) : this.sendBuffer(packet)
+            des.modified ? this.write(name, params) : this.sendBuffer(packet);
         }
     }
-    
+
     readPacket(packet) {
         if (!this.startRelaying) {
             super.readPacket(packet);
