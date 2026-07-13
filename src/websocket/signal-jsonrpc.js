@@ -184,10 +184,9 @@ class NethernetJSONRPC extends EventEmitter {
                 break
             case "Signaling_ReceiveMessage_v1_0":
                 this.ws.send(JSON.stringify({ id: message.id, result: null, jsonrpc: "2.0" }))
-
-                for (const param of message.params) {
+                const params = Array.isArray(message.params)? message.params : message.params ? [message.params]: []
+                for (const param of params) {
                     this.sendDeliveryNotification(param.From, param.Id)
-
                     let signalMessage = param.Message
                     try {
                         const parsed = JSON.parse(param.Message)
